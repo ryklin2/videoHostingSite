@@ -1,0 +1,42 @@
+<!-- views/layouts/main.handlebars -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="icon" href="/public/favicon.ico" sizes="70x70" type="image/ico"> 
+    <link rel='stylesheet' href='/public/css/style.css' />
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{{title}}</h1>
+            {{> navigation}}
+        </div>
+    </header>
+    
+    <main class="container">
+        {{{body}}}
+    </main>
+
+    <footer>
+        <div class="container">
+            © 2024 Photo Gallery. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="/js/gallery.js"></script>
+    <script src="/js/registration.js"></script>
+</body>
+</html>
+
+<!-- views/partials/navigation.handlebars -->
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/registration">Registration</a></li>
+        <li><a href="/postvideo">Post Video</a></li>
+    </ul>
+</nav>

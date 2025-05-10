@@ -1,0 +1,18 @@
+<h2>Video Gallery</h2>
+<div id="videoGallery" class="gallery-container">
+    {{#each posts}}
+    <div class="gallery-item">
+        <a href="/post/{{this.id}}">
+            <video width="300" height="200" preload="metadata">
+                <source src="{{this.video_path}}" type="video/webm">
+                Your browser does not support the video tag.
+            </video>
+            <p>{{this.title}}</p>
+            <p>By: {{this.username}}</p>
+            <p>Posted: {{formatDate this.created_at}}</p>
+        </a>
+    </div>
+    {{else}}
+    <p>No videos to display.</p>
+    {{/each}}
+</div>

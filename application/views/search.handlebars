@@ -1,0 +1,37 @@
+<h2>Search Results for "{{query}}"</h2>
+
+{{#if message}}
+    <p>{{message}}</p>
+{{else}}
+    {{#if posts.length}}
+        <div class="search-results">
+            {{#each posts}}
+                <div class="search-result-item">
+                    <h3><a href="/post/{{this.id}}">{{this.title}}</a></h3>
+                    <p>By: {{this.username}}</p>
+                    <p>Posted: {{formatDate this.created_at}}</p>
+                    <video width="300" height="200" preload="metadata">
+                        <source src="{{this.video_path}}" type="video/webm">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            {{/each}}
+        </div>
+
+        {{#if totalPages}}
+            <div class="pagination">
+                {{#if prevPage}}
+                    <a href="/post/search?query={{query}}&page={{prevPage}}">Previous</a>
+                {{/if}}
+                
+                <span>Page {{currentPage}} of {{totalPages}}</span>
+                
+                {{#if nextPage}}
+                    <a href="/post/search?query={{query}}&page={{nextPage}}">Next</a>
+                {{/if}}
+            </div>
+        {{/if}}
+    {{else}}
+        <p>No results found for "{{query}}"</p>
+    {{/if}}
+{{/if}}

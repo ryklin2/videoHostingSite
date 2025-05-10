@@ -1,0 +1,50 @@
+<section class="post" data-post-id="{{post.id}}">
+    <h2>{{post.title}}</h2>
+    <p>Author: <span id="post-author">{{post.username}}</span></p>
+    <p>Created: <span id="post-time">{{formatDate post.created_at}}</span></p>
+    
+    <video controls>
+        <source src="{{post.video_path}}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <p>{{post.description}}</p>
+
+    {{#if user}}
+        {{#if (eq user.id post.user_id)}}
+            <form id="deletePostForm" action="/post/{{post.id}}/delete" method="POST">
+                <button type="submit" class="delete-button">Delete Video</button>
+            </form>
+        {{/if}}
+    {{/if}}
+
+    {{#if user}}
+    <button id="likeButton" data-post-id="{{post.id}}" data-liked="{{#if isLiked}}true{{else}}false{{/if}}">
+        {{#if isLiked}}Unlike{{else}}Like{{/if}}
+    </button>
+    {{/if}}
+    <span id="likesCount">{{likesCount}}</span> likes
+
+    <div id="comments" class="section">
+        <h3>Comments</h3>
+        <ul id="commentsList">
+            {{#each comments}}
+            <li class="comment">
+                <p>{{this.content}}</p>
+                <p>By: <strong>{{this.username}}</strong> on {{formatDate this.created_at}}</p>
+            </li>
+            {{/each}}
+        </ul>
+        
+        {{#if user}}
+        <form id="commentForm" data-post-id="{{post.id}}">
+            <textarea name="content" required></textarea>
+            <button type="submit">Add Comment</button>
+        </form>
+        {{else}}
+        <p>Please <a href="/login">login</a> to comment.</p>
+        {{/if}}
+    </div>
+</section>
+
+<script src="/js/post.js"></script>

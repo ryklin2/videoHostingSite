@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="registration.html">Registration</a></li>
+            <li><a href="postvideo.html">Post Video</a></li>
+            <li><a href="viewpost.html">View Post</a></li>
+        </ul>
+    </nav>
+
+    <section>
+        <h2>Registration Form</h2>
+        <form id="registrationForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <span id="usernameError" class="error"></span><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <span id="passwordError" class="error"></span><br>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+            <span id="confirmPasswordError" class="error"></span><br>
+
+            <input type="checkbox" id="age-confirmation" name="age-confirmation" required>
+            <label for="age-confirmation">I am 13+ years of age</label><br>
+
+            <input type="checkbox" id="tos-agreement" name="tos-agreement" required>
+            <label for="tos-agreement">I accept the <a href="#">TOS and Privacy Rules</a></label><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+
+    <script src="../js/registration.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<section class="profile-section">
+    <h2>User Profile</h2>
+    {{#if user}}
+        <div class="user-info">
+            <p><strong>Username:</strong> {{user.username}}</p>
+            <p><strong>Email:</strong> {{user.email}}</p>
+            <p><strong>Member since:</strong> {{formatDate user.created_at}}</p>
+        </div>
+        
+        <h3>Your Posts</h3>
+        {{#if userPosts.length}}
+            <div class="user-posts">
+                {{#each userPosts}}
+                    <div class="post-item">
+                        <h4>{{this.title}}</h4>
+                        <p>{{truncate this.description 100}}</p>
+                        <a href="/post/{{this.id}}">View Post</a>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <p>You haven't made any posts yet.</p>
+        {{/if}}
+
+        <h3>Liked Videos</h3>
+        {{#if likedPosts.length}}
+            <div class="liked-posts">
+                {{#each likedPosts}}
+                    <div class="post-item">
+                        <h4>{{this.title}}</h4>
+                        <p>{{truncate this.description 100}}</p>
+                        <a href="/post/{{this.id}}">View Post</a>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <p>You haven't liked any videos yet.</p>
+        {{/if}}
+    {{else}}
+        <p>Please log in to view your profile.</p>
+    {{/if}}
+</section>

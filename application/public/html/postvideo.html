@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<link href="../css/style.css" rel="stylesheet">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Video</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="registration.html">Registration</a></li>
+            <li><a href="postvideo.html">Post Video</a></li>
+            <li><a href="viewpost.html">View Post</a></li>
+        </ul>
+    </nav>
+
+    <section>
+        <h2>Post Video Form</h2>
+        <form>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required><br>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea><br>
+
+            <label for="video">Video:</label>
+            <input type="file" id="video" name="video" accept="video/*" required><br>
+
+            <input type="checkbox" id="aup-agreement" name="aup-agreement" required>
+            <label for="aup-agreement">I accept the Acceptable Use Policy for uploading videos</label><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+</body>
+</html>

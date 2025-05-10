@@ -1,0 +1,48 @@
+<section>
+    <h2>Create a New Post</h2>
+    <form action="/post/create" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="video">Video:</label>
+            <input type="file" id="video" name="video" accept="video/*" required>
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="aupCheck" required>
+                I accept the Acceptable Use Policy for uploading videos
+            </label>
+        </div>
+        
+        <button type="submit">Create Post</button>
+    </form>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('video');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                    e.preventDefault();
+                    alert('File size exceeds 10MB. Please choose a smaller file.');
+                }
+            } else {
+                e.preventDefault();
+                alert('Please select a video file.');
+            }
+        });
+    });
+</script>
