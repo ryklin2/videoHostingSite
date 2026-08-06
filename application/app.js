@@ -16,6 +16,12 @@ const Post = require('./models/post'); // Add this line
 
 const app = express();
 
+// Required when HTTPS is terminated by a reverse proxy in production so secure
+// session cookies are recognized correctly.
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 const env = process.env.NODE_ENV || 'development';
 const pool = mysql.createPool(dbConfig[env]);
 
@@ -65,13 +71,15 @@ const sessionStore = new MySQLStore({}, pool);
 
 app.use(session({
   key: 'session_cookie_name',
-  secret: 'session_cookie_secret',
+  secret: process.env.SESSION_SECRET || 'session_cookie_secret',
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
-    secure: false
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    httpOnly: true
   }
 }));
 

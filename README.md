@@ -30,6 +30,10 @@ Please follow the instructions below and fill in the information requested when 
   DB_PASSWORD=aztec
   DB_NAME=database
   SESSION_SECRET=your_session_secret
+  GOOGLE_CLIENT_ID=your-google-oauth-client-id
+  GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+  # Must exactly match a Google Cloud Console authorized redirect URI.
+  GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
   ```
 
 - Replace the placeholders with your actual MySQL credentials and choose a strong session secret.
@@ -46,7 +50,8 @@ CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NULL,
+  google_id VARCHAR(255) NULL UNIQUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -80,6 +85,8 @@ CREATE TABLE likes (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 ```
+
+For an existing database, run [the Google OAuth migration](application/database/migrations/001_add_google_oauth.sql) once. In Google Cloud Console, create an OAuth 2.0 **Web application** client and add the callback URL above under **Authorized redirect URIs**. Never commit its client secret.
 ## Run Instructions
 ## How to Run the Application
 

@@ -9,4 +9,7 @@
         
         <button type="submit">Login</button>
     </form>
+    {{#if error}}<p class="error">{{error}}</p>{{/if}}
+    <p>or</p>
+    <a href="/auth/google">Continue with Google</a>
 </section>
