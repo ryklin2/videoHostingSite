@@ -11,6 +11,7 @@ const postRoutes = require('./routes/post');
 const searchRoutes = require('./routes/search');
 const { isAuthenticated } = require('./middleware/auth');
 const profileRoutes = require('./routes/profile');
+const messageRoutes = require('./routes/messages');
 const helpers = require('./helpers/handlebars-helpers');
 const Post = require('./models/post'); // Add this line
 
@@ -94,6 +95,7 @@ app.use((req, res, next) => {
 app.use('/auth', authRoutes);
 app.use('/post', postRoutes);
 app.use('/profile', profileRoutes);
+app.use('/messages', messageRoutes);
 app.use('/search', searchRoutes);
 
 

@@ -265,14 +265,40 @@ video {
 .search-form {
     margin-bottom: 20px;
   }
+
+/* Direct messages: a compact two-pane layout inspired by modern social DMs. */
+.messages-page { display: grid; grid-template-columns: minmax(235px, 32%) 1fr; min-height: 620px; padding: 0; overflow: hidden; }
+.conversation-list { background: #0d0d0d; border-right: 1px solid #244d24; padding: 20px; }
+.conversation-list h2, .thread-header h2 { margin-bottom: 12px; }
+.new-conversation-form { max-width: none; margin-bottom: 18px; }
+.new-conversation-form label { display: block; margin-bottom: 6px; }
+.new-conversation-form div, .compose-message div { display: flex; gap: 8px; }
+.new-conversation-form input { margin: 0; min-width: 0; }
+.new-conversation-form button, .compose-message button { background: #00ff00; color: #000; border: 0; border-radius: 18px; font-weight: bold; padding: 8px 14px; cursor: pointer; }
+.conversation { display: block; padding: 12px 8px; color: #c6ffc6; text-decoration: none; border-bottom: 1px solid #1d381d; }
+.conversation:hover, .conversation.active { background: #173317; }
+.conversation span { display: block; color: #8db48d; font-size: .9em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.message-thread { display: flex; flex-direction: column; min-width: 0; background: #080808; }
+.thread-header { border-bottom: 1px solid #244d24; padding: 20px; }
+.thread-messages { flex: 1; padding: 20px; overflow-y: auto; }
+.message-bubble { clear: both; width: fit-content; max-width: 75%; margin: 0 0 14px; padding: 10px 13px; border-radius: 18px; color: #fff; }
+.message-bubble.sent { float: right; background: #147a36; border-bottom-right-radius: 4px; }
+.message-bubble.received { float: left; background: #292929; border-bottom-left-radius: 4px; }
+.message-bubble strong, .message-bubble time { display: block; font-size: .78em; opacity: .8; }
+.message-bubble p { overflow-wrap: anywhere; }
+.message-media { display: block; max-width: 100%; max-height: 300px; margin-top: 8px; border-radius: 12px; }
+.compose-message { max-width: none; padding: 16px; border-top: 1px solid #244d24; }
+.compose-message textarea { margin-bottom: 8px; min-height: 70px; }
+.compose-message input[type="file"] { min-width: 0; color: #c6ffc6; }
+.empty-state, .empty-thread { color: #8db48d; padding: 20px 0; }
+.empty-thread { margin: auto; text-align: center; }
+@media (max-width: 700px) { .messages-page { grid-template-columns: 1fr; } .conversation-list { border-right: 0; border-bottom: 1px solid #244d24; } .conversations { max-height: 200px; overflow-y: auto; } .message-thread { min-height: 500px; } }
   
   .search-form input[type="text"] {
     padding: 5px;
     width: 200px;
   }
-  
+
   .search-form button {
     padding: 5px 10px;
   }
-  
-  

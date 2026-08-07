@@ -3,6 +3,7 @@ module.exports = {
         return new Date(date).toLocaleDateString();
     },
     truncate: function(str, len) {
+        if (!str) return '';
         if (str.length > len && str.length > 0) {
             let new_str = str + " ";
             new_str = str.substr(0, len);
@@ -11,5 +12,8 @@ module.exports = {
             return new_str + '...';
         }
         return str;
+    },
+    isImage: function(mimeType) {
+        return typeof mimeType === 'string' && mimeType.startsWith('image/');
     }
 };

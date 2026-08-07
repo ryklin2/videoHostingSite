@@ -87,6 +87,8 @@ CREATE TABLE likes (
 ```
 
 For an existing database, run [the Google OAuth migration](application/database/migrations/001_add_google_oauth.sql) once. In Google Cloud Console, create an OAuth 2.0 **Web application** client and add the callback URL above under **Authorized redirect URIs**. Never commit its client secret.
+
+To enable direct messages, run [the direct-message migration](application/database/migrations/002_add_direct_messages.sql). Message images and videos are stored in `application/private-uploads/messages` and are only served through an authenticated conversation-member route.
 ## Run Instructions
 ## How to Run the Application
 

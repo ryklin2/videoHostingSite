@@ -1,0 +1,50 @@
+<section class="messages-page">
+  <aside class="conversation-list">
+    <h2>Messages</h2>
+    <form action="/messages/conversations" method="POST" class="new-conversation-form">
+      <label for="username">Message a user</label>
+      <div><input id="username" name="username" type="text" placeholder="Username" required><button type="submit">New</button></div>
+    </form>
+    {{#if error}}<p class="error">{{error}}</p>{{/if}}
+    <div class="conversations">
+      {{#each conversations}}
+        <a class="conversation {{#if (eq ../conversation.id id)}}active{{/if}}" href="/messages/{{id}}">
+          <strong>{{username}}</strong>
+          {{#if last_message}}<span>{{truncate last_message 48}}</span>{{else}}<span>Start a conversation</span>{{/if}}
+        </a>
+      {{else}}
+        <p class="empty-state">No conversations yet.</p>
+      {{/each}}
+    </div>
+  </aside>
+
+  <div class="message-thread">
+    {{#if conversation}}
+      <header class="thread-header"><h2>{{conversation.username}}</h2></header>
+      <div class="thread-messages">
+        {{#each messages}}
+          <article class="message-bubble {{#if (eq sender_id ../user.id)}}sent{{else}}received{{/if}}">
+            <strong>{{sender_username}}</strong>
+            {{#if body}}<p>{{body}}</p>{{/if}}
+            {{#if media_filename}}
+              {{#if (isImage media_mime_type)}}
+                <img class="message-media" src="/messages/media/{{id}}" alt="Shared image">
+              {{else}}
+                <video class="message-media" controls src="/messages/media/{{id}}">Shared video</video>
+              {{/if}}
+            {{/if}}
+            <time>{{formatDate created_at}}</time>
+          </article>
+        {{else}}
+          <p class="empty-state">Say hello to {{conversation.username}}.</p>
+        {{/each}}
+      </div>
+      <form class="compose-message" action="/messages/{{conversation.id}}" method="POST" enctype="multipart/form-data">
+        <textarea name="body" maxlength="2000" placeholder="Start a new message"></textarea>
+        <div><input type="file" name="media" accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm"><button type="submit">Send</button></div>
+      </form>
+    {{else}}
+      <div class="empty-thread"><h2>Your messages</h2><p>Select a conversation or start a new one.</p></div>
+    {{/if}}
+  </div>
+</section>
