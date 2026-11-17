@@ -131,7 +131,7 @@ class Post {
     static async getComments(postId) {
         try {
             const [rows] = await pool.query(
-                'SELECT comments.*, users.username FROM comments JOIN users ON comments.user_id = users.id WHERE post_id = ? ORDER BY created_at DESC',
+                'SELECT comments.*, users.username FROM comments JOIN users ON comments.user_id = users.id WHERE comments.post_id = ? ORDER BY comments.created_at DESC',
                 [postId]
             );
             console.log(`Retrieved ${rows.length} comments for post ${postId}`);
