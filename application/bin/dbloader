@@ -1,98 +1,110 @@
 "use strict";
+// Creates the database and all tables for a fresh install.
+// Uses the DB_* settings from application/.env. Run with: npm run builddb
+require("dotenv").config({ path: require("path").join(__dirname, "..", ".env") });
 const mysql = require("mysql2/promise");
 
-function displayWarningMessage(warning) {
-  switch (warning.Code) {
-    case 1007:
-      console.log(`Skipping Database Creation --> ${warning.Message}`);
-      break;
-    case 1050:
-      console.log(`Skipping Table Creation --> ${warning.Message}`);
-      break;
-  }
-}
+const DB_NAME = process.env.DB_NAME || "csc317_project";
 
-async function getConnection() {
-  return await mysql.createConnection({
-    host: "localhost",
-    //TODO make sure to change to the user you want to use
-    user: "root", //Your DB username
-    //TODO make sure to change to the correct password for your user.
-    password: "0322", //Your DB password
-  });
-}
+const TABLES = {
+  users: `
+    CREATE TABLE IF NOT EXISTS users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) NOT NULL UNIQUE,
+      email VARCHAR(255) NOT NULL UNIQUE,
+      password VARCHAR(255) NULL,          -- NULL for Google-only accounts
+      google_id VARCHAR(255) NULL UNIQUE,  -- Google "sub" claim
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+  posts: `
+    CREATE TABLE IF NOT EXISTS posts (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      description TEXT,
+      video_path VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`,
+  comments: `
+    CREATE TABLE IF NOT EXISTS comments (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      post_id INT NOT NULL,
+      user_id INT NOT NULL,
+      content TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`,
+  likes: `
+    CREATE TABLE IF NOT EXISTS likes (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      post_id INT NOT NULL,
+      user_id INT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE KEY unique_like (post_id, user_id),
+      FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`,
+  conversations: `
+    CREATE TABLE IF NOT EXISTS conversations (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_one_id INT NOT NULL,
+      user_two_id INT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      UNIQUE KEY unique_conversation (user_one_id, user_two_id),
+      CONSTRAINT conversation_users_differ CHECK (user_one_id < user_two_id),
+      FOREIGN KEY (user_one_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_two_id) REFERENCES users(id) ON DELETE CASCADE
+    )`,
+  messages: `
+    CREATE TABLE IF NOT EXISTS messages (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      conversation_id INT NOT NULL,
+      sender_id INT NOT NULL,
+      body VARCHAR(2000) NULL,
+      media_filename VARCHAR(255) NULL,
+      media_mime_type VARCHAR(100) NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+      FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+      INDEX messages_by_conversation (conversation_id, created_at)
+    )`,
+};
 
-async function makeDatabase(connection) {
-  //TODO make sure to change yourdbnamehere
-  const [result, _] = await connection.query(
-    "CREATE DATABASE IF NOT EXISTS yourdbnamehere;"
-  );
+async function reportResult(result, created, skipped, connection) {
   if (result && result.warningStatus > 0) {
-    const [warningResult, _] = await connection.query("SHOW WARNINGS");
-    displayWarningMessage(warningResult[0]);
+    const [warnings] = await connection.query("SHOW WARNINGS");
+    console.log(`${skipped} --> ${warnings[0].Message}`);
   } else {
-    console.log("Created Database!");
-  }
-}
-
-async function makeUsersTable(connection) {
-  const [result, _] = await connection.query(
-    // Users Table SQL Goes here
-    `
-    `
-  );
-
-  if (result && result.warningStatus > 0) {
-    const [warningResult, _] = await connection.query("SHOW WARNINGS");
-    displayWarningMessage(warningResult[0]);
-  } else {
-    console.log("Created Users Table!");
-  }
-}
-
-async function makePostsTable(connection) {
-  const [result, _] = await connection.query(
-    // Posts Table SQL Goes here
-    ``
-  );
-  if (result && result.warningStatus > 0) {
-    const [warningResult, _] = await connection.query("SHOW WARNINGS");
-    displayWarningMessage(warningResult[0]);
-  } else {
-    console.log("Created Posts Table!");
-  }
-}
-
-async function makeCommentsTable(connection) {
-  const [result, _] = await connection.query(
-    // Comments Table SQL Goes here
-    ` 
-    `
-  );
-  if (result && result.warningStatus > 0) {
-    const [warningResult, _] = await connection.query("SHOW WARNINGS");
-    displayWarningMessage(warningResult[0]);
-  } else {
-    console.log("Created Comments Table!");
+    console.log(created);
   }
 }
 
 (async function main() {
   let connection = null;
   try {
-    connection = await getConnection();
-    await makeDatabase(connection); // make DB
-    //TODO make sure to change yourdbnamehere
-    await connection.query("USE yourdbnamehere"); // set new DB to the current DB
-    await makeUsersTable(connection); // try to make user table
-    await makePostsTable(connection); // try to make posts table
-    await makeCommentsTable(connection); // try to make comments table
-    connection.close();
-    return;
+    connection = await mysql.createConnection({
+      host: process.env.DB_HOST || "localhost",
+      port: parseInt(process.env.DB_PORT) || 3306,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+    });
+    const [dbResult] = await connection.query(
+      `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\``
+    );
+    await reportResult(dbResult, `Created database ${DB_NAME}!`, "Skipping database creation", connection);
+    await connection.query(`USE \`${DB_NAME}\``);
+
+    for (const [name, sql] of Object.entries(TABLES)) {
+      const [result] = await connection.query(sql);
+      await reportResult(result, `Created ${name} table!`, `Skipping ${name} table`, connection);
+    }
   } catch (error) {
     console.error(error);
-    if (connection != null) {
-      connection.close();
-    }
+    process.exitCode = 1;
+  } finally {
+    if (connection) await connection.end();
   }
 })();

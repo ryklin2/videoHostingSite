@@ -23,11 +23,11 @@ Please follow the instructions below and fill in the information requested when 
 
 ## Additional Information
 
-- Make sure to create a `.env` file in the root directory with the following variables:
+- Copy `application/.env.example` to `application/.env` (it is git-ignored) and fill in:
   ```
   DB_HOST=localhost
-  DB_USER=daniel
-  DB_PASSWORD=aztec
+  DB_USER=your_db_user
+  DB_PASSWORD=your_db_password
   DB_NAME=database
   SESSION_SECRET=your_session_secret
   GOOGLE_CLIENT_ID=your-google-oauth-client-id
@@ -86,9 +86,11 @@ CREATE TABLE likes (
 );
 ```
 
-For an existing database, run [the Google OAuth migration](application/database/migrations/001_add_google_oauth.sql) once. In Google Cloud Console, create an OAuth 2.0 **Web application** client and add the callback URL above under **Authorized redirect URIs**. Never commit its client secret.
+The easiest way to create the database and every table above (plus the `conversations` and `messages` tables used by direct messages) is `npm run builddb` from `application/`; it reads the `DB_*` settings from `.env`.
 
-To enable direct messages, run [the direct-message migration](application/database/migrations/002_add_direct_messages.sql). Message images and videos are stored in `application/private-uploads/messages` and are only served through an authenticated conversation-member route.
+In Google Cloud Console, create an OAuth 2.0 **Web application** client and add the callback URL above under **Authorized redirect URIs**. Never commit its client secret.
+
+Message images and videos are stored in `application/private-uploads/messages` and are only served through an authenticated conversation-member route.
 ## Run Instructions
 ## How to Run the Application
 
